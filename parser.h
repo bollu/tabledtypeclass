@@ -367,6 +367,12 @@ struct Parser {
         exit(1);
     }
 
+    std::optional<Span> parseOptionalIdentifier(std::string name) {
+        std::optional<Identifier> id = this->parseOptionalIdentifier();
+        if (id && id->name == name) { return {id->span}; }
+        return {};
+    }
+
     std::optional<Identifier> parseOptionalIdentifier() {
         eatWhitespace();
         Loc lcur = l;
