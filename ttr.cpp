@@ -192,11 +192,20 @@ struct Goal {
   vector<Consumer *> dependents;
 
   Goal(SurfaceType *tosolve) : tosolve(tosolve) {};
+
+
+  bool equals(const Goal *other) const {
+      return false;
+  }
 };
 
 struct Solution {
     void print(ostream &cerr) const {
         cerr << "solution";
+    }
+
+    bool equals(const Solution *other) const {
+        return false;
     }
 };
 
@@ -205,13 +214,25 @@ struct Generator {
 };
 
 template <typename T> struct table {
-  bool contains(T s);
-  void add(T s);
+  optional<T *> contains(T *t0) const {
+      for(T *t : ts) {
+          if (t->equals(t0)) { return t; }
+      }
+      return {};
+  };
+  void add(T *t) {
+      ts.push_back(t);
+  };
+
+private:
+  vector<T *> ts;
+
+
 };
 struct Consumer {
   Goal *ancestor;      // thing we are trying to solve.
   queue<Goal *> goals; // to be solved to solve ancestor
-  table<Solution *> tblsol;
+  table<Solution> tblsol;
 };
 
 // resolve a goal with a solution??
@@ -311,7 +332,7 @@ private:
   optional<Solution *> fail() { return {}; };
 
   Goal *original;
-  table<Goal *> tblgoal;
+  table<Goal> tblgoal;
   genstack gs;
   resumestack rs;
 };
